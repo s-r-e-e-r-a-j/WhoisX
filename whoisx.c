@@ -26,7 +26,7 @@ static const char *default_servers[] = {
     "whois.ripe.net",
     "whois.apnic.net",
     "whois.lacnic.net",
-    "whois.afrinic.net"
+    "whois.afrinic.net",
     "whois.verisign-grs.com",
     "whois.pir.org"
 };
