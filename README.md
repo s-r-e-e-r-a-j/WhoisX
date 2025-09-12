@@ -6,7 +6,7 @@
 
 - Automatically switches to another server if one fails
 
-- Comes with default global WHOIS servers (IANA, ARIN, RIPE, APNIC, LACNIC, AFRINIC)
+- Comes with default global WHOIS servers (IANA, ARIN, RIPE, APNIC, LACNIC, AFRINIC, whois.verisign-grs.com, whois.pir.org))
 
 - Custom connection timeout (default: 7 seconds)
 
