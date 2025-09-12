@@ -15,3 +15,18 @@
 - Multi-threaded for handling multiple queries
 
 - JSON output support for automation and scripting
+
+## Installation
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/s-r-e-e-r-a-j/WhoisX.git
+```
+2. **Navigate to the project directory:**
+```bash
+cd WhoisX
+```
+3. **Run the installer to setup the system-wide command (Linux & Termux):**
+```bash
+sudo bash install.sh
+```
