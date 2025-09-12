@@ -76,3 +76,8 @@ whoisx -S whois.verisign-grs.com,whois.pir.org example.org
 whoisx example.com github.com google.com
 ```
 
+## Uninstallation
+```bash
+sudo bash uninstall.sh
+```
+This will remove the whoisx command from your system(Termux & Linux).
