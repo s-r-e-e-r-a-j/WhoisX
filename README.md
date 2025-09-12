@@ -42,3 +42,37 @@ sudo bash install.sh
 | `-j`                    | Show output in JSON format                    |
 | `-h`                    | Show help menu                                |
 
+
+##  Usage  
+
+```bash
+whoisx [options] query1 [query2 ...]
+```
+
+## 📌 Examples  
+
+**Lookup a domain**  
+```bash
+whoisx example.com
+```
+
+**Use JSON output**
+```bash
+whoisx -j github.com
+```
+
+**Follow referral servers**
+```bash
+whoisx -r google.com
+```
+
+**Set custom servers**
+```bash
+whoisx -S whois.verisign-grs.com,whois.pir.org example.org
+```
+
+**Multiple queries in one run**
+```bash
+whoisx example.com github.com google.com
+```
+
