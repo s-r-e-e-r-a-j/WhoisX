@@ -81,3 +81,6 @@ whoisx example.com github.com google.com
 sudo bash uninstall.sh
 ```
 This will remove the whoisx command from your system(Termux & Linux).
+
+## License
+This project is licensed under the GNU General Public License v3.0
