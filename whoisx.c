@@ -27,6 +27,8 @@ static const char *default_servers[] = {
     "whois.apnic.net",
     "whois.lacnic.net",
     "whois.afrinic.net"
+    "whois.verisign-grs.com",
+    "whois.pir.org"
 };
 #define DEFAULT_SERVERS_COUNT (sizeof(default_servers)/sizeof(default_servers[0]))
 
