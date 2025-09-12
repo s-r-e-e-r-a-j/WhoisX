@@ -34,9 +34,9 @@ fi
 # Build WhoisX
 echo "[*] Building WhoisX..."
 if [[ "$ENV" == "termux" ]]; then
-    clang "$SRC_FILE" -o "$INSTALL_DIR/$BIN_FILE" -lssl -lcrypto
+    clang "$SRC_FILE" -o "$INSTALL_DIR/$BIN_FILE" -pthread
 else
-    gcc "$SRC_FILE" -o "$INSTALL_DIR/$BIN_FILE" -lssl -lcrypto
+    gcc "$SRC_FILE" -o "$INSTALL_DIR/$BIN_FILE" -pthread
 fi
 
 # Check build success
