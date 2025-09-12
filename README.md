@@ -30,3 +30,15 @@ cd WhoisX
 ```bash
 sudo bash install.sh
 ```
+
+## Command Line Options  
+
+| Option                  | Description                                   |
+|-------------------------|-----------------------------------------------|
+| `-S server1,server2,...`| Use custom WHOIS servers (comma-separated)    |
+| `-p port`               | Set the port (default: 43)                    |
+| `-t timeout_ms`         | Set timeout in milliseconds (default: 7000)   |
+| `-r`                    | Follow referral WHOIS servers                 |
+| `-j`                    | Show output in JSON format                    |
+| `-h`                    | Show help menu                                |
+
