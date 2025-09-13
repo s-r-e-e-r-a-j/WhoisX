@@ -49,7 +49,7 @@ sudo bash install.sh
 whoisx [options] query1 [query2 ...]
 ```
 
-## 📌 Examples  
+## Examples  
 
 **Lookup a domain**  
 ```bash
