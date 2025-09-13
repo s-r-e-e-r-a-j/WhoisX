@@ -42,8 +42,7 @@ fi
 # Check build success
 if [[ -f "$INSTALL_DIR/$BIN_FILE" ]]; then
     chmod +x "$INSTALL_DIR/$BIN_FILE"
-    echo "[+] Build successful! You can now run WhoisX from anywhere using the command:"
-    echo "    $BIN_FILE"
+    echo "[+] Build successful! You can now run WhoisX from anywhere using the command: $BIN_FILE"
 else
     echo "[!] Build failed. Check compiler output."
     exit 1
