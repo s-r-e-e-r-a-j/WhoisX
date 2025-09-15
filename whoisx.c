@@ -1,3 +1,6 @@
+// Developer: Sreeraj 
+// GitHub: https://github.com/s-r-e-e-r-a-j 
+
 #define _GNU_SOURCE
 #define _POSIX_C_SOURCE 200112L
 #include <stdio.h>
