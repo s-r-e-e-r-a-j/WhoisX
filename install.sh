@@ -57,7 +57,8 @@ fi
 if [[ "$ENV" == "termux" ]]; then
      if ! command -v clang >/dev/null 2>&1; then
         echo "[*] clang not found. Installing..."
-        pkg install clang
+        pkg update
+        pkg install -y clang
      fi
 fi
         
