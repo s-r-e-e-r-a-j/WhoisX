@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # WhoisX Uninstaller Script
 # Works on Linux and Termux (Android)
