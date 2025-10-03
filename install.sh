@@ -53,6 +53,13 @@ if [[ ! -f "$SRC_FILE" ]]; then
     exit 1
 fi
 
+if [[ "$ENV" == "termux" ]]; then
+     if ! command -v clang >/dev/null 2>&1; then
+        echo "[*] clang not found. Installing..."
+        pkg install clang
+     fi
+fi
+        
 # Build WhoisX
 echo "[*] Building WhoisX..."
 if [[ "$ENV" == "termux" ]]; then
