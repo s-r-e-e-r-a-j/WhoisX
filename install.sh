@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # WhoisX Installer Script
 # Works on Linux and Termux (Android)
