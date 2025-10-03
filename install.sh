@@ -25,6 +25,28 @@ if [[ "$ENV" == "linux" && "$EUID" -ne 0 ]]; then
     exit 1
 fi
 
+# Automatically install gcc on Linux if missing
+if [[ "$ENV" == "linux" ]]; then
+    if ! command -v gcc >/dev/null 2>&1; then
+        echo "[*] gcc not found. Installing..."
+
+        # Detect package manager
+        if command -v apt >/dev/null 2>&1; then
+            apt update -y
+            apt install -y gcc
+        elif command -v pacman >/dev/null 2>&1; then
+            pacman -Sy --noconfirm gcc
+        elif command -v dnf >/dev/null 2>&1; then
+            dnf install -y gcc
+        elif command -v yum >/dev/null 2>&1; then
+            yum install -y gcc
+        else
+            echo "[!] No supported package manager found to install gcc."
+            exit 1
+        fi
+    fi
+fi
+
 # Check source file
 if [[ ! -f "$SRC_FILE" ]]; then
     echo "[!] Source file $SRC_FILE not found. Place it in the same directory."
