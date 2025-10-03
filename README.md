@@ -16,6 +16,10 @@
 
 - JSON output support for automation and scripting
 
+## Compatibility
+- Linux (Debian, RHEL, Arch)
+- Termux (Android)
+
 ## Installation
 
 1. **Clone the repository:**
