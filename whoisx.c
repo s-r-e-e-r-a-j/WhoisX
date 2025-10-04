@@ -558,10 +558,10 @@ void *worker_fn(void *arg) {
         char *actual_query = job->query;
         char *resp_total = NULL;
 
-        // Resolve hostname if needed for IP-only servers
+        // Resolve query only once, using the first server as reference
         char *resolved_query = maybe_resolve_hostname(actual_query, opts->servers[0]);
 
-        // Query WHOIS using all servers
+        // WHOIS query
         resp_total = whois_query_multi(
             opts->servers,
             opts->servers_count,
@@ -573,47 +573,38 @@ void *worker_fn(void *arg) {
 
         free(resolved_query);
 
+        // Build server list string
+        size_t sslen = 0;
+        for (int i = 0; i < opts->servers_count; i++)
+            sslen += strlen(opts->servers[i]) + 1;
+        char *servers_str = malloc(sslen + 1);
+        servers_str[0] = '\0';
+        for (int i = 0; i < opts->servers_count; i++) {
+            if (i) strcat(servers_str, ",");
+            strcat(servers_str, opts->servers[i]);
+        }
+
         if (opts->json) {
             char *escq = json_escape(actual_query);
-
-            size_t sslen = 0;
-            for (int i = 0; i < opts->servers_count; ++i) sslen += strlen(opts->servers[i]) + 1;
-            char *server_list_str = malloc(sslen + 1);
-            server_list_str[0] = '\0';
-            for (int i = 0; i < opts->servers_count; ++i) {
-                if (i) strcat(server_list_str, ",");
-                strcat(server_list_str, opts->servers[i]);
-            }
-
-            char *escs = json_escape(server_list_str);
+            char *escs = json_escape(servers_str);
             char *escresp = json_escape(resp_total ? resp_total : "");
-            printf("{\"query\":\"%s\",\"servers\":\"%s\",\"response\":\"%s\"}\n", escq, escs, escresp);
-
+            printf("{\"query\":\"%s\",\"servers\":\"%s\",\"response\":\"%s\"}\n",
+                   escq, escs, escresp);
             free(escq);
             free(escs);
             free(escresp);
-            free(server_list_str);
         } else {
-            size_t sslen = 0;
-            for (int i = 0; i < opts->servers_count; ++i) sslen += strlen(opts->servers[i]) + 1;
-            char *servers_display = malloc(sslen + 1);
-            servers_display[0] = '\0';
-            for (int i = 0; i < opts->servers_count; ++i) {
-                if (i) strcat(servers_display, ",");
-                strcat(servers_display, opts->servers[i]);
-            }
-
             printf(">>> Query: %s\n--- WHOIS (servers: %s port:%s) ---\n%s\n",
                    actual_query,
-                   servers_display,
+                   servers_str,
                    opts->port ? opts->port : DEFAULT_PORT,
                    resp_total ? resp_total : "(no response)");
-            free(servers_display);
         }
 
+        free(servers_str);
+        free(resp_total);
         free(job->query);
         free(job);
-        if (resp_total) free(resp_total);
     }
     return NULL;
 }
