@@ -524,57 +524,71 @@ void *worker_fn(void *arg) {
         job_t *job = job_queue_pop(&jq);
         if (!job) break;
 
-        char *q = job->query;
-        char **servers = opts->servers;
-        int sc = opts->servers_count;
-        char *resp = whois_query_multi(servers, sc, opts->port ? opts->port : DEFAULT_PORT,
-                                       q, opts->timeout_ms, opts->follow_referrals);
+        char *actual_query = job->query;
+        char *resp_total = NULL;
+
+        for (int i = 0; i < opts->servers_count; ++i) {
+            char *server = opts->servers[i];
+            char *respected_query = maybe_resolve_hostname(actual_query, server);
+
+            char *resp = whois_query_multi(&server, 1, opts->port ? opts->port : DEFAULT_PORT,
+                                           respected_query, opts->timeout_ms, opts->follow_referrals);
+
+            if (!resp_total) {
+                resp_total = resp;
+            } else {
+                size_t len_total = strlen(resp_total);
+                size_t len_resp = strlen(resp);
+                resp_total = realloc(resp_total, len_total + len_resp + 2);
+                memcpy(resp_total + len_total, "\n", 1);
+                memcpy(resp_total + len_total + 1, resp, len_resp + 1);
+                free(resp);
+            }
+
+            free(respected_query);
+        }
 
         if (opts->json) {
-            char *escq = json_escape(q);
+            char *escq = json_escape(actual_query);
+
             size_t sslen = 0;
-            char *server_list_str = NULL;
-            if (sc > 0) {
-                for (int i = 0; i < sc; ++i) sslen += strlen(opts->servers[i]) + 1;
-                server_list_str = malloc(sslen + 1);
-                server_list_str[0] = '\0';
-                for (int i = 0; i < sc; ++i) {
-                    if (i) strcat(server_list_str, ",");
-                    strcat(server_list_str, opts->servers[i]);
-                }
-            } else {
-                server_list_str = strdup(DEFAULT_WHOIS);
+            for (int i = 0; i < opts->servers_count; ++i) sslen += strlen(opts->servers[i]) + 1;
+            char *server_list_str = malloc(sslen + 1);
+            server_list_str[0] = '\0';
+            for (int i = 0; i < opts->servers_count; ++i) {
+                if (i) strcat(server_list_str, ",");
+                strcat(server_list_str, opts->servers[i]);
             }
+
             char *escs = json_escape(server_list_str);
-            char *escresp = json_escape(resp ? resp : "");
+            char *escresp = json_escape(resp_total ? resp_total : "");
             printf("{\"query\":\"%s\",\"servers\":\"%s\",\"response\":\"%s\"}\n", escq, escs, escresp);
+
             free(escq);
             free(escs);
             free(escresp);
             free(server_list_str);
         } else {
-            char *servers_display = NULL;
-            if (opts->servers_count > 0) {
-                size_t sslen = 0;
-                for (int i = 0; i < opts->servers_count; ++i) sslen += strlen(opts->servers[i]) + 1;
-                servers_display = malloc(sslen + 1);
-                servers_display[0] = '\0';
-                for (int i = 0; i < opts->servers_count; ++i) {
-                    if (i) strcat(servers_display, ",");
-                    strcat(servers_display, opts->servers[i]);
-                }
-            } else {
-                servers_display = strdup(DEFAULT_WHOIS);
+            size_t sslen = 0;
+            for (int i = 0; i < opts->servers_count; ++i) sslen += strlen(opts->servers[i]) + 1;
+            char *servers_display = malloc(sslen + 1);
+            servers_display[0] = '\0';
+            for (int i = 0; i < opts->servers_count; ++i) {
+                if (i) strcat(servers_display, ",");
+                strcat(servers_display, opts->servers[i]);
             }
-            printf(">>> Query: %s\n--- WHOIS (servers: %s port:%s) ---\n%s\n", q,
+
+            printf(">>> Query: %s\n--- WHOIS (servers: %s port:%s) ---\n%s\n",
+                   actual_query,
                    servers_display,
                    opts->port ? opts->port : DEFAULT_PORT,
-                   resp ? resp : "(no response)");
+                   resp_total ? resp_total : "(no response)");
             free(servers_display);
         }
+
         free(job->query);
         free(job);
-        if (resp) free(resp);
+        if (resp_total) free(resp_total);
     }
     return NULL;
 }
