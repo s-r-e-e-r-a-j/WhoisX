@@ -74,6 +74,22 @@ typedef struct {
 
 static job_queue_t jq;
 
+// Check if a server requires an IP address
+int server_requires_ip(const char *server) {
+    for (int i = 0; i < ip_only_count; ++i) {
+        if (strcmp(server, ip_only_servers[i]) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+// Convert hostname to IP if server requires it
+char *maybe_resolve_hostname(const char *query, const char *server) {
+    if (!server_requires_ip(server)) return strdup(query); // server accepts domains
+    if (is_ip(query)) return strdup(query);              // already an IP
+    return resolve_hostname_to_ip(query);                // convert hostname to IP
+}
+
 void job_queue_init(job_queue_t *q) {
     q->head = q->tail = NULL;
     pthread_mutex_init(&q->mu, NULL);
