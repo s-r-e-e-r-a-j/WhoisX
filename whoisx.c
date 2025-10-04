@@ -458,7 +458,9 @@ char *whois_query_multi(char **servers, int servers_count, const char *port, con
                 }
             }
             char qline[512];
-            snprintf(qline, sizeof(qline), "%s\r\n", query);
+            char *q_to_send = maybe_resolve_hostname(query, cur_server);
+            snprintf(qline, sizeof(qline), "%s\r\n", q_to_send);
+            free(q_to_send);            
             if (send_all(sfd, qline, strlen(qline), timeout_ms) != 0) {
                 close(sfd);
                 if (servers_count > 0 && initial_index < servers_count) {
@@ -558,19 +560,15 @@ void *worker_fn(void *arg) {
         char *actual_query = job->query;
         char *resp_total = NULL;
 
-        char *query_for_server = maybe_resolve_hostname(query, cur_server);
-
         // WHOIS query
         resp_total = whois_query_multi(
             opts->servers,
             opts->servers_count,
             opts->port ? opts->port : DEFAULT_PORT,
-            resolved_query,
+            actual_query,
             opts->timeout_ms,
             opts->follow_referrals
         );
-
-        free(resolved_query);
 
         // Build server list string
         size_t sslen = 0;
