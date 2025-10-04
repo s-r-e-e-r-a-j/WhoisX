@@ -74,6 +74,31 @@ typedef struct {
 
 static job_queue_t jq;
 
+char *resolve_hostname_to_ip(const char *hostname) {
+    struct addrinfo hints, *res;
+    char buf[INET6_ADDRSTRLEN];
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;    // Allow IPv4 or IPv6
+    hints.ai_socktype = SOCK_STREAM;
+
+    if (getaddrinfo(hostname, NULL, &hints, &res) != 0) {
+        // Failed to resolve, return original hostname
+        return strdup(hostname);
+    }
+
+    void *addr;
+    if (res->ai_family == AF_INET) {
+        addr = &((struct sockaddr_in *)res->ai_addr)->sin_addr;
+    } else { // AF_INET6
+        addr = &((struct sockaddr_in6 *)res->ai_addr)->sin6_addr;
+    }
+
+    inet_ntop(res->ai_family, addr, buf, sizeof(buf));
+    freeaddrinfo(res);
+    return strdup(buf);
+}
+
 // Check if a server requires an IP address
 int server_requires_ip(const char *server) {
     for (int i = 0; i < ip_only_count; ++i) {
