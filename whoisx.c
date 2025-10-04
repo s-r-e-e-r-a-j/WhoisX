@@ -558,8 +558,7 @@ void *worker_fn(void *arg) {
         char *actual_query = job->query;
         char *resp_total = NULL;
 
-        // Resolve query only once, using the first server as reference
-        char *resolved_query = maybe_resolve_hostname(actual_query, opts->servers[0]);
+        char *query_for_server = maybe_resolve_hostname(query, cur_server);
 
         // WHOIS query
         resp_total = whois_query_multi(
