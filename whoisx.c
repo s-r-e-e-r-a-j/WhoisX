@@ -36,6 +36,15 @@ static const char *default_servers[] = {
 };
 #define DEFAULT_SERVERS_COUNT (sizeof(default_servers)/sizeof(default_servers[0]))
 
+static const char *ip_only_servers[] = {
+    "whois.arin.net",
+    "whois.ripe.net",
+    "whois.apnic.net",
+    "whois.lacnic.net",
+    "whois.afrinic.net"
+};
+static const int ip_only_count = 5;
+
 typedef struct {
     char **servers;
     int servers_count;
