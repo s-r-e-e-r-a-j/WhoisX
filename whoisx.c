@@ -43,7 +43,7 @@ static const char *ip_only_servers[] = {
     "whois.lacnic.net",
     "whois.afrinic.net"
 };
-static const int ip_only_count = 5;
+static const int ip_only_count = sizeof(ip_only_servers) / sizeof(ip_only_servers[0]);
 
 typedef struct {
     char **servers;
