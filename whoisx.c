@@ -558,26 +558,20 @@ void *worker_fn(void *arg) {
         char *actual_query = job->query;
         char *resp_total = NULL;
 
-        for (int i = 0; i < opts->servers_count; ++i) {
-            char *server = opts->servers[i];
-            char *respected_query = maybe_resolve_hostname(actual_query, server);
+        // Resolve hostname if needed for IP-only servers
+        char *resolved_query = maybe_resolve_hostname(actual_query, opts->servers[0]);
 
-            char *resp = whois_query_multi(&server, 1, opts->port ? opts->port : DEFAULT_PORT,
-                                           respected_query, opts->timeout_ms, opts->follow_referrals);
+        // Query WHOIS using all servers
+        resp_total = whois_query_multi(
+            opts->servers,
+            opts->servers_count,
+            opts->port ? opts->port : DEFAULT_PORT,
+            resolved_query,
+            opts->timeout_ms,
+            opts->follow_referrals
+        );
 
-            if (!resp_total) {
-                resp_total = resp;
-            } else {
-                size_t len_total = strlen(resp_total);
-                size_t len_resp = strlen(resp);
-                resp_total = realloc(resp_total, len_total + len_resp + 2);
-                memcpy(resp_total + len_total, "\n", 1);
-                memcpy(resp_total + len_total + 1, resp, len_resp + 1);
-                free(resp);
-            }
-
-            free(respected_query);
-        }
+        free(resolved_query);
 
         if (opts->json) {
             char *escq = json_escape(actual_query);
