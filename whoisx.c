@@ -74,6 +74,12 @@ typedef struct {
 
 static job_queue_t jq;
 
+int is_ip(const char *s) {
+    struct in_addr addr4;
+    struct in6_addr addr6;
+    return inet_pton(AF_INET, s, &addr4) == 1 || inet_pton(AF_INET6, s, &addr6) == 1;
+}
+
 char *resolve_hostname_to_ip(const char *hostname) {
     struct addrinfo hints, *res;
     char buf[INET6_ADDRSTRLEN];
