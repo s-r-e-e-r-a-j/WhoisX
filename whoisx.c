@@ -46,6 +46,23 @@ static const char *ip_only_servers[] = {
 static const int ip_only_count = sizeof(ip_only_servers) / sizeof(ip_only_servers[0]);
 
 typedef struct {
+    const char *tld;
+    const char *server;
+} WhoisMap;
+
+static const WhoisMap whois_map[] = {
+    {"com", "whois.verisign-grs.com"},
+    {"net", "whois.verisign-grs.com"},
+    {"org", "whois.pir.org"},
+    {"edu", "whois.educause.edu"},
+    {"in",  "whois.registry.in"},
+    {"io",  "whois.nic.io"},
+    {"co",  "whois.nic.co"},
+    {"uk",  "whois.nic.uk"},
+    {NULL,  NULL}
+};
+
+typedef struct {
     char **servers;
     int servers_count;
     char *port;
@@ -621,7 +638,7 @@ int main(int argc, char *argv[]) {
     options_t opts = {0};
     opts.port = NULL;
     opts.timeout_ms = DEFAULT_TIMEOUT_MS;
-    opts.follow_referrals = 0;
+    opts.follow_referrals = 1;
     opts.threads = 1;
     opts.json = 0;
     opts.servers = NULL;
@@ -646,7 +663,7 @@ int main(int argc, char *argv[]) {
                 opts.timeout_ms = atoi(optarg);
                 break;
             case 'r':
-                opts.follow_referrals = 1;
+                opts.follow_referrals = 0;
                 break;
             case 'j':
                 opts.json = 1;
