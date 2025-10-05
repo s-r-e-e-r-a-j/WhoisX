@@ -8,6 +8,8 @@
 
 - It includes default global WHOIS servers (IANA, ARIN, RIPE, APNIC, LACNIC, AFRINIC, whois.verisign-grs.com, whois.pir.org, etc.)
 
+- Selects the appropriate WHOIS server based on the domain type (e.g., .com, .net, .org).
+
 - Custom connection timeout (default: 7 seconds)
 
 - Option to follow referral WHOIS servers
