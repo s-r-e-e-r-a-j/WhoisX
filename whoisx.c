@@ -699,11 +699,20 @@ int main(int argc, char *argv[]) {
     }
 
     if (opts.servers_count == 0) {
-        opts.servers = malloc(DEFAULT_SERVERS_COUNT * sizeof(char*));
+        const char *domain = argv[optind];           // first query
+        const char *tld = get_tld(domain);           // extract TLD
+        const char *primary_server = find_whois_server(tld);  // TLD server
+
+        opts.servers_count = DEFAULT_SERVERS_COUNT + 1;
+        opts.servers = malloc(opts.servers_count * sizeof(char*));
+
+        // Primary TLD-specific server first
+        opts.servers[0] = strdup(primary_server);
+
+        // Default fallback servers
         for (size_t i = 0; i < DEFAULT_SERVERS_COUNT; i++) {
-            opts.servers[i] = strdup(default_servers[i]);
+            opts.servers[i + 1] = strdup(default_servers[i]);
         }
-        opts.servers_count = DEFAULT_SERVERS_COUNT;
     }
 
     job_queue_init(&jq);
