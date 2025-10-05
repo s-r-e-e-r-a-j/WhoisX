@@ -654,7 +654,7 @@ int main(int argc, char *argv[]) {
     options_t opts = {0};
     opts.port = NULL;
     opts.timeout_ms = DEFAULT_TIMEOUT_MS;
-    opts.follow_referrals = 1;
+    opts.follow_referrals = 0;
     opts.threads = 1;
     opts.json = 0;
     opts.servers = NULL;
@@ -679,7 +679,7 @@ int main(int argc, char *argv[]) {
                 opts.timeout_ms = atoi(optarg);
                 break;
             case 'r':
-                opts.follow_referrals = 0;
+                opts.follow_referrals = 1;
                 break;
             case 'j':
                 opts.json = 1;
