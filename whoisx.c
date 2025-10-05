@@ -138,6 +138,22 @@ char *maybe_resolve_hostname(const char *query, const char *server) {
     return resolve_hostname_to_ip(query);                // convert hostname to IP
 }
 
+// Get TLD from domain
+const char* get_tld(const char *domain) {
+    const char *dot = strrchr(domain, '.');
+    if (!dot || !*(dot + 1)) return NULL;
+    return dot + 1;
+}
+
+// Find TLD-specific server
+const char* find_whois_server(const char *tld) {
+    for (int i = 0; whois_map[i].tld != NULL; i++) {
+        if (strcasecmp(whois_map[i].tld, tld) == 0)
+            return whois_map[i].server;
+    }
+    return "whois.iana.org"; // fallback
+}
+
 void job_queue_init(job_queue_t *q) {
     q->head = q->tail = NULL;
     pthread_mutex_init(&q->mu, NULL);
