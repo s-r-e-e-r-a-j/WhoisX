@@ -154,6 +154,11 @@ const char* find_whois_server(const char *tld) {
     return "whois.iana.org"; // fallback
 }
 
+int should_follow_referrals(const char *server, int user_option) {
+    if (strcmp(server, "whois.iana.org") == 0) return 1; // always follow IANA referrals
+    return user_option; // follow only if user requested
+}
+
 void job_queue_init(job_queue_t *q) {
     q->head = q->tail = NULL;
     pthread_mutex_init(&q->mu, NULL);
@@ -562,7 +567,7 @@ char *whois_query_multi(char **servers, int servers_count, const char *port, con
                 }
             }
 
-            if (follow_referrals) {
+            if (should_follow_referrals(cur_server, follow_referrals)) {
                 char *ref = find_referral(resp_total);
                 if (ref && strlen(ref) > 0) {
                     if (cur_server && strcmp(cur_server, ref) == 0) {
