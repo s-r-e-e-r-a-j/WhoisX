@@ -33,13 +33,13 @@ if [[ "$ENV" == "linux" ]]; then
         # Detect package manager
         if command -v apt >/dev/null 2>&1; then
             apt update -y
-            apt install -y gcc
+            apt install build-essential -y  
         elif command -v pacman >/dev/null 2>&1; then
-            pacman -Sy --noconfirm gcc
+            pacman -Sy --noconfirm base-devel
         elif command -v dnf >/dev/null 2>&1; then
-            dnf install -y gcc
+            dnf groupinstall "Development Tools" -y
         elif command -v yum >/dev/null 2>&1; then
-            yum install -y gcc
+            yum groupinstall "Development Tools" -y
         else
             echo "[!] No supported package manager found to install gcc."
             exit 1
